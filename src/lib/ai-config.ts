@@ -53,7 +53,10 @@ Core Response Principles:
  */
 export function createOpenRouterProvider() {
   const apiKey =
-    process.env.OPENROUTER_API_KEY || process.env.OPENAI_API_KEY || "";
+    process.env.OPENROUTER_API_KEY ||
+    process.env.OPENAI_API_KEY ||
+    process.env.ANTHROPIC_API_KEY ||
+    "";
   return createOpenAI({
     baseURL: OPENROUTER_BASE_URL,
     apiKey,
