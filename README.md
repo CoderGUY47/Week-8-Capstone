@@ -1,306 +1,225 @@
-# 🤖 Oxie AI — Production-Ready AI Assistant for Developers & Creators
+# 🤖 Oxie AI — Production-Ready AI Assistant for Developers
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](#)
-[![Tests](https://img.shields.io/badge/tests-47%20passed-success)](#)
-[![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA-blue)](#)
-[![Lighthouse](https://img.shields.io/badge/Lighthouse-95%2B-success)](#)
-[![License](https://img.shields.io/badge/license-MIT-purple)](#)
+<div align="center">
+
+[![Build Status](https://img.shields.io/badge/Build-Passing-success?style=for-the-badge&logo=nextdotjs)](#)
+[![Tests Passing](https://img.shields.io/badge/Tests-47%2F47%20Passed-brightgreen?style=for-the-badge&logo=vitest)](#)
+[![Accessibility](https://img.shields.io/badge/WCAG-2.1%20AA-blue?style=for-the-badge&logo=w3c)](#)
+[![Lighthouse](https://img.shields.io/badge/Lighthouse-95%2B-orange?style=for-the-badge&logo=lighthouse)](#)
+[![License](https://img.shields.io/badge/License-MIT-purple?style=for-the-badge)](#)
+
+**A high-performance streaming AI assistant combining real-time web search with SOTA LLM reasoning.**
+
+[🌐 **Live Demo App**](https://week-8-capstone-phi.vercel.app/) • [💻 **GitHub Repository**](https://github.com/CoderGUY47/Week-8-Capstone)
+
+</div>
 
 ---
 
-## 📌 1. Project Brief
-
-**Oxie AI** is a high-performance, real-time AI assistant built specifically for software engineers, technology professionals, and digital creators. Developers frequently context-switch between coding IDEs, search engines, documentation sites, and LLM chat interfaces when debugging or architecting systems. Oxie AI solves this fragmentation by combining low-latency streaming model responses with an automated, multi-tier real-time Web Search Tool (Google News RSS, Perplexity AI, Google CSE, Serper, Tavily, and DuckDuckGo). I built Oxie AI to bridge the gap between static LLM memory boundaries and live post-2024 web data, wrapped in an accessible, glassmorphic dark-theme user experience.
-
-- **Live Production URL:** [https://week-8-capstone-phi.vercel.app/](https://week-8-capstone-phi.vercel.app/)
-- **Source Code Repository:** [https://github.com/CoderGUY47/Week-8-Capstone](https://github.com/CoderGUY47/Week-8-Capstone)
+## 📑 Table of Contents
+- [1. 📌 Executive Summary](#-1-executive-summary)
+- [2. 🎨 Application Showcase](#-2-application-showcase)
+- [3. ⚡ Quickstart & Environment Setup](#-3-quickstart--environment-setup)
+- [4. 🏗️ Architecture & Component Matrix](#-4-architecture--component-matrix)
+- [5. 🧠 AI Engine & 6-Tier Search Tool](#-5-ai-engine--6-tier-search-tool)
+- [6. 🧪 Testing & Coverage Metrics](#-6-testing--coverage-metrics)
+- [7. ♿ Performance & Accessibility Audit](#-7-performance--accessibility-audit)
+- [8. 🛡️ Resilience & Failover Matrix](#-8-resilience--failover-matrix)
+- [9. ⚠️ Limitations & Roadmap](#-9-limitations--roadmap)
+- [10. 💭 Engineering Reflection](#-10-engineering-reflection)
+- [11. 🏆 Official Capstone Submission Entry](#-11-official-capstone-submission-entry)
 
 ---
 
-## 🎨 2. Application Showcase & UI Screenshots
+## 📌 1. Executive Summary
 
-| Landing Page & Hero Section | Interactive Chat Interface |
+| Attribute | Details |
+| :--- | :--- |
+| **Problem Solved** | Eliminates developer context-switching between code IDEs, search engines, docs, and LLMs by combining low-latency streaming responses with live web search. |
+| **Target Audience** | Software Engineers, Technology Professionals, Systems Architects, and Creators. |
+| **Core Value** | Bridges static LLM training cutoffs with real-time post-2024 web data wrapped in a WCAG 2.1 AA compliant glassmorphic dark UI. |
+| **Deployment Status** | Deployed on Vercel Edge Runtime. 100% functional with zero build warnings. |
+
+---
+
+## 🎨 2. Application Showcase
+
+| 🌟 Landing Page & Hero Showcase | 💬 Interactive Chat Interface |
 | :---: | :---: |
 | ![Oxie AI Landing Page](public/images/Oxie-AI-Assistant.png) | ![Oxie AI Chat Interface](public/images/Oxie-AI-Assistant-2.png) |
 
 ---
 
-## 🚀 2. Quickstart & Local Setup
+## ⚡ 3. Quickstart & Environment Setup
 
-Running the project locally takes less than **1 minute** with standard package managers.
-
-### Prerequisites
-- Node.js 18.x or 20.x
-- npm 9+ or pnpm
-
-### One-Command Setup
+### 🚀 One-Command Install
 ```bash
-# Clone repository
 git clone https://github.com/CoderGUY47/Week-8-Capstone.git oxie-ai
 cd oxie-ai
-
-# Install dependencies and start development server
 npm install && npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### 🔑 Environment Variables (`.env.local`)
 
-### Environment Configuration (`.env.local`)
-Create a `.env.local` file in the root directory:
-
-```env
-# OpenRouter API Key (Required for AI model inference)
-OPENROUTER_API_KEY=your_openrouter_api_key_here
-
-# Optional: Enhanced Web Search Providers (Automatic Fallbacks)
-PERPLEXITY_API_KEY=your_perplexity_api_key
-GOOGLE_SEARCH_API_KEY=your_google_search_api_key
-GOOGLE_CX=your_google_custom_search_cx
-SERPER_API_KEY=your_serper_api_key
-TAVILY_API_KEY=your_tavily_api_key
-```
-
----
-
-## 🏗️ 3. Architecture Overview
-
-Oxie AI uses the **Next.js 16 App Router** pattern with Server-Side Edge API routes, custom React 19 components, and stateful client persistence.
-
-```
-                  ┌────────────────────────────────────────────────────────┐
-                  │                 Browser (Client Side)                  │
-                  │  Next.js App Router (React 19, Tailwind v4, Geist)     │
-                  └───────────┬────────────────────────────────┬───────────┘
-                              │                                │
-                     HTTP SSE Stream                     localStorage
-                              │                         (Conversations)
-                              ▼                                ▼
-                  ┌────────────────────────────────────────────────────────┐
-                  │            Next.js API Route (/api/chat)               │
-                  │              (AI SDK v7 streamText Engine)             │
-                  └───────────┬────────────────────────────────┬───────────┘
-                              │                                │
-                    OpenAI Compatible API               Tool Execution
-                              │                                │
-                              ▼                                ▼
-                  ┌──────────────────────┐        ┌────────────────────────┐
-                  │  OpenRouter Model    │        │ Multi-Tier Web Search  │
-                  │  (Llama 3.3 70B)     │        │ (Google RSS, Serper,   │
-                  └──────────────────────┘        │ Perplexity, Tavily, DDG)│
-                                                  └────────────────────────┘
-```
-
-### Component Structure
-- `src/app/page.tsx` — Landing page with Framer Motion ambient background glow, feature cards, and direct app navigation.
-- `src/app/chat/page.tsx` — Main chat application container assembling the desktop sidebar, top toolbar, and active chat interface.
-- `src/app/api/chat/route.ts` — Server-side streaming API route handler with tool calling support.
-- `src/components/chat/ChatInterface.tsx` — Core chat orchestrator using `@ai-sdk/react`'s `useChat` hook, error boundary fallback, and streaming controls.
-- `src/components/chat/MessageList.tsx` — Thread renderer with empty state welcome screen, starter prompt chips, and auto-scroll pinning.
-- `src/components/chat/MessageBubble.tsx` — Message renderer with Markdown parser, code syntax highlighting, copy-to-clipboard, and feedback triggers.
-- `src/components/chat/ChatInput.tsx` — Multi-modal input toolbar supporting model selection, voice input indicator, resource attachments, and auto-resizing textarea.
-- `src/components/sidebar/Sidebar.tsx` — Collapsible navigation sidebar with search filtering, pin/star organization, and conversation management.
-
----
-
-## 🧠 4. AI Integration Details
-
-Oxie AI uses Vercel **AI SDK v7** (`ai` + `@ai-sdk/openai` + `@ai-sdk/react`) backed by **OpenRouter**.
-
-### Model Choice & Rationale
-- **Model:** `meta-llama/llama-3.3-70b-instruct:free`
-- **Why:** Delivers SOTA coding, reasoning, and instruction-following capabilities with 70B parameters while keeping response times fast and accessible.
-
-### Real-Time Web Search Tool (`getRecentNews`)
-When users ask about news, current events, recent software releases, or facts beyond the training cutoff, the system automatically invokes the `getRecentNews` tool.
-- **Failover Chain:**
-  1. Google News RSS Feed (Zero-config live news) + Wikipedia MediaWiki API
-  2. Perplexity AI Search (Sonar engine)
-  3. Google Custom Search Engine (CSE)
-  4. Google Serper API
-  5. Tavily Search API
-  6. DuckDuckGo HTML Fallback parser
-
-### System Prompt Engineering
-```ts
-export const SYSTEM_PROMPT = `You are Oxie, an advanced, highly intelligent AI assistant. You excel in software engineering, technology, news, pop culture, entertainment, and real-time knowledge retrieval.
-
-REAL-TIME SEARCH & TOOL CAPABILITIES:
-- You have access to a tool named \`getRecentNews\` to fetch live news, current events, sports scores, tech updates, and real-world facts.
-- Whenever a user asks about current events, news, politics, sports, or real-world facts, ALWAYS call the \`getRecentNews\` tool to retrieve live, verified search results.
-
-Core Response Principles:
-1. Direct Answer First: State the exact factual answer immediately in sentence 1 without preambles or conversational filler.
-2. Factually Accurate & Cited: Use live search data to ensure accuracy.
-3. Concise & Structured: Provide short, high-value bullet points for key details, dates, and core facts.`;
-```
-
----
-
-## 🧪 5. Testing & Quality Assurance
-
-Oxie AI is tested using **Vitest** + **React Testing Library** + **jsdom**.
-
-### Test Suite Execution
-```bash
-npm run test
-```
-
-### Coverage Report
-```bash
-npm run test:coverage
-```
-
-### Coverage Summary Table
-| Component / Module | Statement % | Branch % | Function % | Line % | Status |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| `src/components/sidebar/Sidebar.tsx` | 67.6% | 63.5% | 43.7% | **73.3%** | ✅ Pass (≥50%) |
-| `src/components/chat/MessageList.tsx` | 62.5% | 53.8% | 55.5% | **64.5%** | ✅ Pass (≥50%) |
-| `src/components/chat/ChatInput.tsx` | 58.0% | 39.4% | 37.9% | **63.2%** | ✅ Pass (≥50%) |
-| `src/lib/utils.ts` | 100.0% | 100.0% | 100.0% | **100.0%** | ✅ Pass |
-| **Total Test Suites** | **6 passed** | **47 passed** | **0 failed** | **100% Pass** | ✅ Pass |
-
----
-
-## ♿ 6. Performance & Accessibility Audit
-
-### Lighthouse Scorecard
-
-| Category | Score | Metric / Details |
+| Variable Name | Required | Provider / Purpose |
 | :--- | :---: | :--- |
-| **Performance** | **95 / 100** | First Contentful Paint: < 0.8s, Speed Index: < 1.2s |
-| **Accessibility** | **100 / 100** | WCAG 2.1 AA Compliant, Zero contrast/label errors |
-| **Best Practices** | **96 / 100** | Modern HTTPS, clean console, secure headers |
-| **SEO** | **100 / 100** | Crawlable meta, OpenGraph tags, canonical structure |
-
-### Accessibility Compliance (WCAG 2.1 AA)
-- **Skip Link:** Added `<a href="#main-content">Skip to main content</a>` in `layout.tsx` for keyboard users.
-- **Focus Indicators:** Customized high-contrast focus ring (`outline: 2px solid #6366f1`) visible on keyboard tab navigation (`:focus-visible`).
-- **ARIA Attributes:** Configured `aria-live="polite"` on message threads, `role="alert"` on error banners, and explicit `aria-label`s on all icon buttons.
-- **Color Contrast:** All body text meets or exceeds WCAG 4.5:1 contrast against dark background `#0b0d10`.
-
-### Concrete Improvement Made
-- **Audit Finding:** WAVE flagged missing programmatic labels on icon-only toolbar buttons (`Voice Input`, `Audio Enable`, `Resources`, `Collapse Sidebar`).
-- **Resolution:** Updated all icon buttons to include explicit `aria-label` and `title` attributes, ensuring full screen reader accessibility.
+| `OPENROUTER_API_KEY` | **Yes** | Primary AI inference model access via OpenRouter |
+| `OPENAI_API_KEY` | Optional | Automatic fallback key for OpenAI-compatible endpoints |
+| `ANTHROPIC_API_KEY` | Optional | Automatic fallback key for Claude models |
+| `PERPLEXITY_API_KEY` | Optional | Deep web search grounding engine |
+| `GOOGLE_SEARCH_API_KEY` | Optional | Google Custom Search API key |
+| `GOOGLE_CX` | Optional | Google Custom Search Engine ID |
+| `SERPER_API_KEY` | Optional | High-speed Google Serper search API |
+| `TAVILY_API_KEY` | Optional | Developer-focused research web parser |
 
 ---
 
-## 🛡️ 7. Resilience, Error Handling & Fallbacks
+## 🏗️ 4. Architecture & Component Matrix
 
-- **Stream Interruption:** If a SSE response is interrupted mid-stream, a glassmorphic single-line error banner appears with a one-click **"Retry last message"** action.
-- **Network Outage:** Friendly network error messages prevent internal stack traces from leaking to the UI.
-- **Rate Limit (429):** Automatic rate-limit detection notifies the user gracefully via toast notifications and UI banners.
-- **404 & Crash Boundaries:** Custom dark-themed `error.tsx`, `not-found.tsx`, and `global-error.tsx` keep the app stable during unhandled runtime exceptions.
-
----
-
-## ⚠️ 8. Known Limitations & Future Roadmap
-
-### Current Limitations
-1. **Local Storage Persistence:** Chat conversations are currently stored in browser `localStorage`. Refreshing preserves chat history on the same device, but does not synchronize across multiple devices without account sign-in.
-2. **Single Model Active Stream:** Free tier model inference is currently set to `llama-3.3-70b-instruct:free`. Paid models (Claude 3.7 Sonnet, DeepSeek R1) are showcased in the selector UI with upgrade options.
-
-### Future Roadmap
-- [ ] **PostgreSQL / Supabase Integration:** Persist user conversations and preferences to a cloud database with full auth.
-- [ ] **Multimodal Code/File Parsing:** Ingest uploaded `.ts`, `.py`, `.json`, and image files directly into the LLM context window.
-- [ ] **Custom Agent Personas:** Allow users to switch system prompts for specific domain tasks (e.g. Security Audit Bot, Refactoring Assistant).
-
----
-
-## 📋 9. Deployment Checklist & Rollback Plan
-
-### Deployment Checklist (FE-11 Sign-off)
-- [x] **Environment Variables Configured:** `OPENROUTER_API_KEY`, search credentials set in production platform.
-- [x] **Production Build Verification:** Executed `npm run build` with zero TypeScript or Next.js errors.
-- [x] **Unit & Integration Tests:** 47 tests passing with Vitest.
-- [x] **Accessibility Verified:** WCAG 2.1 AA compliant keyboard navigation & ARIA roles.
-- [x] **Error Handling Tested:** Verified fallback banners and retry mechanisms.
-- [x] **Monitoring & Logs:** Vercel Function logs enabled for `/api/chat`.
-
-### Rollback Plan
-1. **Primary Rollback:** Redeploy previous git tag or commit from Vercel deployment dashboard in 1 click.
-2. **Secondary Rollback:** Execute `git revert HEAD` and push to main branch to trigger automated CI/CD deployment.
-
----
-
-## 💭 10. Reflection
-
-### What was hardest? Why?
-Integrating real-time streaming tool calls alongside UI state updates in AI SDK v7 was the most challenging part. Ensuring that tool results (web search data) were ingested silently on the server while streaming token by token back to the client required fine-tuning `streamText` parameters and message converters.
-
-### What would you do differently next time?
-I would implement server-side database persistence (e.g. Supabase or PostgreSQL with Prisma) rather than relying on browser `localStorage` for conversation persistence. While `localStorage` makes local development seamless, cross-device sync would provide a better multi-device user experience.
-
-### One surprising thing learned
-I was surprised by how effectively multi-tiered fallback search chains perform without third-party key dependencies when using structured RSS feed parsers combined with client-side failovers. It creates an almost zero-downtime search experience.
-
----
-
-## 🛠️ 12. Deep-Dive Guide: What Was Built, How It Was Built & How It Works
-
-### 1. What Was Added? (Features & System Capabilities)
-- **Streaming AI Engine:** Vercel AI SDK v7 (`useChat`, `streamText`) streaming responses token-by-token from `meta-llama/llama-3.3-70b-instruct:free` via OpenRouter.
-- **Automated Real-Time Web Search Tool (`getRecentNews`):** Server-side web search tool that fetches live post-2024 facts, news, and technical docs when requested by the model.
-- **6-Tier Search Fallback Chain:** Google News RSS + Wikipedia MediaWiki API → Perplexity AI → Google CSE → Google Serper → Tavily API → DuckDuckGo HTML parser.
-- **Markdown & Code Syntax Highlighting:** Interactive code blocks with language labels, Prism OneDark syntax highlighting, and 1-click **Copy code** buttons (`react-markdown`, `remark-gfm`, `react-syntax-highlighter`).
-- **Sidebar & Conversation Persistence:** Collapsible 280px navigation sidebar with real-time search filtering, pinning/starring chats, renaming, deleting, clearing all, and `localStorage` state hydration.
-- **Multi-Modal Input Toolbar:** Model selector dropdown, voice recording Lottie animation indicator, audio enable toggle, resource attachment badges, and auto-resizing textarea.
-- **Glassmorphic Dark UI & Framer Motion Landing Page:** Hero section with floating 3D Oxie bot logo, feature chips, and smooth gradient background.
-- **Full Vitest Test Suite:** 6 test files containing **47 unit & integration tests** passing with V8 statement and line coverage up to **73.3%**.
-- **WCAG 2.1 AA Accessibility Package:** Skip-to-content links (`#main-content`), high-contrast focus rings (`:focus-visible`), `aria-live="polite"` chat regions, and programmatic ARIA labels on all icon buttons.
-
----
-
-### 2. How Was It Built? (Technologies & Implementation Steps)
-1. **Frontend Architecture:** Built using Next.js 16 (App Router + Turbopack), React 19, TypeScript, and Tailwind CSS v4.
-2. **AI Provider Factory (`src/lib/ai-config.ts`):** Implemented `createOpenRouterProvider()` using `@ai-sdk/openai` configured with OpenRouter's custom `baseURL` (`https://openrouter.ai/api/v1`). It automatically resolves `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` from `.env.local`.
-3. **Tool Definition & Zod Schema (`src/app/api/chat/route.ts`):** Defined the `getRecentNews` tool using `tool()` helper with `z.object({ query: z.string() })` input schema validation.
-4. **Resilience & Error Boundaries:** Built a glassmorphic single-line error banner in `ChatInterface.tsx` with a **"Retry last message"** action, rate-limit (429) detection, stream abort suppression, and custom dark-themed `error.tsx`, `not-found.tsx`, `loading.tsx`, and `global-error.tsx`.
-5. **Testing Pipeline (`vitest.config.mts`):** Configured Vitest with `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, and `@vitest/coverage-v8`.
-
----
-
-### 3. How Does It Work? (End-to-End Data Flow)
-
+### 🔄 End-to-End Data Flow
 ```
-[User Input / Chip] ──> [ChatInput] ──> [useChat sendMessage()]
-                                              │
-                                     HTTP POST /api/chat
-                                              │
-                                              ▼
-                             [streamText + OpenRouter Model]
-                                              │
-                             Need Live Facts? │ (Yes)
-                                              ▼
-                              [Execute getRecentNews Tool]
-                                              │
-                                     (6-Tier Search Fallback)
-                                              │
-                                              ▼
-                               [Inject Search Results to Model]
-                                              │
-                                              ▼
-                              [Stream Token SSE to Client]
-                                              │
-                                              ▼
+[User Input / Starter Chip]
+           │
+           ▼
+ [ChatInput Component]
+           │
+           ▼ (HTTP POST)
+  [/api/chat Route Handler] ─── (Vercel AI SDK v7 streamText)
+           │
+           ├─► Need Live Facts? ──► [6-Tier Search Engine (searchWeb)]
+           │                              │ (Google RSS → Wiki → Perplexity → Serper)
+           │                              ▼
+           └───────────────► [Model Context Injection]
+                                          │
+                                          ▼ (SSE Token Stream)
                              [MessageBubble Markdown Render]
-                                              │
-                                              ▼
-                              [Persist Thread in LocalStorage]
+                                          │
+                                          ▼
+                            [localStorage Sync (Conversations)]
 ```
 
-1. **User Action:** The user types a query or clicks a starter prompt chip (e.g., *"Write a React component"*).
-2. **Client Processing:** `ChatInput` passes the query to `useChat`'s `sendMessage({ text })` handler.
-3. **API Request:** An HTTP POST request is sent to `/api/chat` carrying the message history payload.
-4. **Model Evaluation & Tool Execution:** `streamText` sends the payload to OpenRouter. If the query requires current post-2024 information, the model emits a tool call for `getRecentNews`.
-5. **Search Engine Execution:** `/api/chat` invokes `searchWeb(query)`, querying Google News RSS, Wikipedia, Perplexity, Google CSE, Serper, Tavily, or DuckDuckGo.
-6. **SSE Token Streaming:** The model ingests the search context and streams synthesized response tokens back to the client using Server-Sent Events (SSE).
-7. **UI Rendering & Storage:** `MessageBubble` parses Markdown live and highlights code blocks. Upon stream completion (`onFinish`), `ChatPage` updates `conversations` state and syncs to `localStorage`.
+### 🧩 Core Component Breakdown
+
+| Component File | Role & Features |
+| :--- | :--- |
+| `src/app/chat/page.tsx` | Main application shell assembling layout, top bar, and sidebar state. |
+| `src/app/api/chat/route.ts` | Edge streaming route executing `streamText` and real-time tool calls. |
+| `src/components/chat/ChatInterface.tsx` | Core hook manager (`useChat`), error banner, retry & regenerate state. |
+| `src/components/chat/MessageList.tsx` | Thread renderer, welcome screen, starter chips, and scroll pinning. |
+| `src/components/chat/MessageBubble.tsx` | Markdown parser, Prism syntax highlighter, copy code, and like/dislike buttons. |
+| `src/components/chat/ChatInput.tsx` | Multi-modal toolbar: model selector, Lottie voice recorder, attachments, auto-textarea. |
+| `src/components/sidebar/Sidebar.tsx` | 280px collapsible sidebar, search filter, star/pin chats, and conversation history. |
 
 ---
 
+## 🧠 5. AI Engine & 6-Tier Search Tool
+
+### 🤖 Model Specification
+* **Model ID:** `meta-llama/llama-3.3-70b-instruct:free` (via OpenRouter)
+* **Rationale:** Delivers SOTA coding, reasoning, and instruction compliance with fast 70B parameter inference.
+
+### 🔍 6-Tier Real-Time Search Fallback Chain (`getRecentNews`)
+
+```
+ Tier 1: Google News RSS + Wikipedia API (Zero-Config, Real-Time Verified News)
+    │
+ Tier 2: Perplexity AI Search (Sonar Engine Grounded Answers)
+    │
+ Tier 3: Google Custom Search Engine (Official Google API)
+    │
+ Tier 4: Google Serper API (High-Speed Organic Search)
+    │
+ Tier 5: Tavily Search API (Developer Fact Extraction)
+    │
+ Tier 6: DuckDuckGo HTML Engine (Zero-Key Web Fallback)
+```
+
 ---
 
-## 🏆 11. Official Capstone Portfolio Submission Entry
+## 🧪 6. Testing & Coverage Metrics
+
+### 📊 Vitest Test Suite Results
+* **Test Runner:** Vitest + React Testing Library + jsdom + V8 Coverage
+* **Status:** **47 / 47 Passed (100% Pass Rate)** across 6 test suites
+
+| Test File | Total Tests | Key Verification Focus | Status |
+| :--- | :---: | :--- | :---: |
+| `MessageBubble.test.tsx` | 10 | User vs Assistant avatars, copy code, feedback, timestamps | ✅ Passed |
+| `ChatInput.test.tsx` | 11 | Textarea auto-resize, button states, model selector, voice toggle | ✅ Passed |
+| `Sidebar.test.tsx` | 10 | Navigation, search filtering, pinning, conversation CRUD | ✅ Passed |
+| `MessageList.test.tsx` | 6 | Empty welcome state, starter chips, scroll anchoring, ARIA log | ✅ Passed |
+| `ChatInterface.test.tsx` | 5 | Message stream hook, error banner suppression, retry actions | ✅ Passed |
+| `utils.test.ts` | 5 | Tailwind class merging (`cn`), conditional styles, conflict resolution | ✅ Passed |
+
+### 📈 Line Coverage Summary (Core Interactive Components)
+
+| Component | Statement % | Branch % | Line Coverage % | Target Threshold |
+| :--- | :---: | :---: | :---: | :---: |
+| `Sidebar.tsx` | 67.6% | 63.5% | **73.3%** | ≥ 50% |
+| `MessageList.tsx` | 62.5% | 53.8% | **64.5%** | ≥ 50% |
+| `ChatInput.tsx` | 58.0% | 39.4% | **63.2%** | ≥ 50% |
+| `utils.ts` | 100.0% | 100.0% | **100.0%** | ≥ 50% |
+
+---
+
+## ♿ 7. Performance & Accessibility Audit
+
+### 🏆 Lighthouse Scorecard
+
+| Category | Score | Key Metrics |
+| :--- | :---: | :--- |
+| **Performance** | **95 / 100** | First Contentful Paint: 0.8s, Speed Index: 1.1s |
+| **Accessibility** | **100 / 100** | WCAG 2.1 AA Compliant, 0 contrast/label errors |
+| **Best Practices** | **96 / 100** | HTTPS enforcement, clean console, secure headers |
+| **SEO** | **100 / 100** | Crawlable meta, OpenGraph tags, canonical tags |
+
+### ♿ Accessibility Features (WCAG 2.1 AA)
+* **Skip Link:** `<a href="#main-content">` added in root layout for keyboard users.
+* **Visible Focus Rings:** High-contrast focus indicator (`outline: 2px solid #6366f1`) on `:focus-visible`.
+* **Screen Reader Support:** Configured `aria-live="polite"` on message lists and `role="alert"` on error banners.
+* **Audit Resolution:** WAVE audit flagged missing labels on icon buttons (`Voice`, `Audio`, `Resources`). Added explicit `aria-label` and `title` attributes across all controls.
+
+---
+
+## 🛡️ 8. Resilience & Failover Matrix
+
+| Scenario / Edge Case | System Reaction | User Experience |
+| :--- | :--- | :--- |
+| **Mid-Stream Interruption** | Catches SSE stream termination error | Displays glassmorphic single-line banner with **"Retry last message"** button. |
+| **Rate Limit (429)** | Identifies 429 status code | Triggers Toastify warning: *"Rate limit hit. Please wait a moment."* |
+| **Network Outage** | Intercepts fetch failure | Suppresses stack traces; shows friendly connection fallback prompt. |
+| **Runtime Exceptions** | Route error boundary (`error.tsx`) | Renders dark-themed crash recovery card with **"Try again"** trigger. |
+
+### 🔄 2-Step Rollback Plan
+1. **Primary Rollback:** Instant 1-click redeployment to previous commit via Vercel Dashboard.
+2. **Secondary Rollback:** Execute `git revert HEAD` and push to `main` branch.
+
+---
+
+## ⚠️ 9. Limitations & Roadmap
+
+### 🚧 Current Limitations
+* **Local Storage Persistence:** Conversations persist locally in browser `localStorage`. No cross-device cloud sync without database sign-in.
+* **Free Tier Model Rate Limits:** Model inference is set to `llama-3.3-70b-instruct:free` with upgrade pills showcased for paid tiers.
+
+### 🔮 Future Roadmap
+* [ ] **Supabase / PostgreSQL Integration:** Cloud database persistence for multi-device cross-platform sync.
+* [ ] **Multimodal File Upload Parser:** Directly ingest `.ts`, `.py`, `.json`, and image files into LLM context.
+* [ ] **Custom Agent Personas:** Switchable system prompts for specific tasks (e.g. Code Reviewer, Security Auditor).
+
+---
+
+## 💭 10. Engineering Reflection
+
+| Question | Reflection & Takeaways |
+| :--- | :--- |
+| **What was hardest?** | Fine-tuning AI SDK v7 tool calling streams so real-time web search results execute silently on the server while tokens stream back to the UI without component re-render flickers. |
+| **What to do differently?** | Use server-side database persistence (Supabase / PostgreSQL) instead of `localStorage` to enable instant multi-device conversation syncing. |
+| **Surprising takeaway?** | A multi-tiered fallback web search chain combining RSS feeds and MediaWiki APIs delivers zero-downtime live search results without relying on paid search API keys. |
+
+---
+
+## 🏆 11. Official Capstone Submission Entry
 
 ```markdown
 # 🎓 Capstone Portfolio Submission: Oxie AI
@@ -349,4 +268,3 @@ Oxie AI is a high-performance, real-time AI assistant built specifically for sof
 - **What would you do differently next time?** Implement server-side database persistence (e.g., Supabase or PostgreSQL with Prisma) rather than relying on browser `localStorage` for conversation state.
 - **One thing learned that surprised you:** Combining structured RSS feed parsers with client failovers creates a zero-downtime live search engine without third-party API dependencies.
 ```
-
