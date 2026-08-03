@@ -12,8 +12,16 @@
 
 **Oxie AI** is a high-performance, real-time AI assistant built specifically for software engineers, technology professionals, and digital creators. Developers frequently context-switch between coding IDEs, search engines, documentation sites, and LLM chat interfaces when debugging or architecting systems. Oxie AI solves this fragmentation by combining low-latency streaming model responses with an automated, multi-tier real-time Web Search Tool (Google News RSS, Perplexity AI, Google CSE, Serper, Tavily, and DuckDuckGo). I built Oxie AI to bridge the gap between static LLM memory boundaries and live post-2024 web data, wrapped in an accessible, glassmorphic dark-theme user experience.
 
-- **Live Production URL:** [https://oxie-ai.vercel.app](https://oxie-ai.vercel.app) *(Default deployment endpoint)*
+- **Live Production URL:** [https://week-8-capstone-phi.vercel.app/](https://week-8-capstone-phi.vercel.app/)
 - **Source Code Repository:** [https://github.com/CoderGUY47/Week-8-Capstone](https://github.com/CoderGUY47/Week-8-Capstone)
+
+---
+
+## 🎨 2. Application Showcase & UI Screenshots
+
+| Landing Page & Hero Section | Interactive Chat Interface |
+| :---: | :---: |
+| ![Oxie AI Landing Page](public/images/Oxie-AI-Assistant.png) | ![Oxie AI Chat Interface](public/images/Oxie-AI-Assistant-2.png) |
 
 ---
 
