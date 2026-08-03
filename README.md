@@ -235,6 +235,71 @@ I was surprised by how effectively multi-tiered fallback search chains perform w
 
 ---
 
+## 🛠️ 12. Deep-Dive Guide: What Was Built, How It Was Built & How It Works
+
+### 1. What Was Added? (Features & System Capabilities)
+- **Streaming AI Engine:** Vercel AI SDK v7 (`useChat`, `streamText`) streaming responses token-by-token from `meta-llama/llama-3.3-70b-instruct:free` via OpenRouter.
+- **Automated Real-Time Web Search Tool (`getRecentNews`):** Server-side web search tool that fetches live post-2024 facts, news, and technical docs when requested by the model.
+- **6-Tier Search Fallback Chain:** Google News RSS + Wikipedia MediaWiki API → Perplexity AI → Google CSE → Google Serper → Tavily API → DuckDuckGo HTML parser.
+- **Markdown & Code Syntax Highlighting:** Interactive code blocks with language labels, Prism OneDark syntax highlighting, and 1-click **Copy code** buttons (`react-markdown`, `remark-gfm`, `react-syntax-highlighter`).
+- **Sidebar & Conversation Persistence:** Collapsible 280px navigation sidebar with real-time search filtering, pinning/starring chats, renaming, deleting, clearing all, and `localStorage` state hydration.
+- **Multi-Modal Input Toolbar:** Model selector dropdown, voice recording Lottie animation indicator, audio enable toggle, resource attachment badges, and auto-resizing textarea.
+- **Glassmorphic Dark UI & Framer Motion Landing Page:** Hero section with floating 3D Oxie bot logo, feature chips, and smooth gradient background.
+- **Full Vitest Test Suite:** 6 test files containing **47 unit & integration tests** passing with V8 statement and line coverage up to **73.3%**.
+- **WCAG 2.1 AA Accessibility Package:** Skip-to-content links (`#main-content`), high-contrast focus rings (`:focus-visible`), `aria-live="polite"` chat regions, and programmatic ARIA labels on all icon buttons.
+
+---
+
+### 2. How Was It Built? (Technologies & Implementation Steps)
+1. **Frontend Architecture:** Built using Next.js 16 (App Router + Turbopack), React 19, TypeScript, and Tailwind CSS v4.
+2. **AI Provider Factory (`src/lib/ai-config.ts`):** Implemented `createOpenRouterProvider()` using `@ai-sdk/openai` configured with OpenRouter's custom `baseURL` (`https://openrouter.ai/api/v1`). It automatically resolves `OPENROUTER_API_KEY`, `OPENAI_API_KEY`, or `ANTHROPIC_API_KEY` from `.env.local`.
+3. **Tool Definition & Zod Schema (`src/app/api/chat/route.ts`):** Defined the `getRecentNews` tool using `tool()` helper with `z.object({ query: z.string() })` input schema validation.
+4. **Resilience & Error Boundaries:** Built a glassmorphic single-line error banner in `ChatInterface.tsx` with a **"Retry last message"** action, rate-limit (429) detection, stream abort suppression, and custom dark-themed `error.tsx`, `not-found.tsx`, `loading.tsx`, and `global-error.tsx`.
+5. **Testing Pipeline (`vitest.config.mts`):** Configured Vitest with `jsdom`, `@testing-library/react`, `@testing-library/jest-dom`, and `@vitest/coverage-v8`.
+
+---
+
+### 3. How Does It Work? (End-to-End Data Flow)
+
+```
+[User Input / Chip] ──> [ChatInput] ──> [useChat sendMessage()]
+                                              │
+                                     HTTP POST /api/chat
+                                              │
+                                              ▼
+                             [streamText + OpenRouter Model]
+                                              │
+                             Need Live Facts? │ (Yes)
+                                              ▼
+                              [Execute getRecentNews Tool]
+                                              │
+                                     (6-Tier Search Fallback)
+                                              │
+                                              ▼
+                               [Inject Search Results to Model]
+                                              │
+                                              ▼
+                              [Stream Token SSE to Client]
+                                              │
+                                              ▼
+                             [MessageBubble Markdown Render]
+                                              │
+                                              ▼
+                              [Persist Thread in LocalStorage]
+```
+
+1. **User Action:** The user types a query or clicks a starter prompt chip (e.g., *"Write a React component"*).
+2. **Client Processing:** `ChatInput` passes the query to `useChat`'s `sendMessage({ text })` handler.
+3. **API Request:** An HTTP POST request is sent to `/api/chat` carrying the message history payload.
+4. **Model Evaluation & Tool Execution:** `streamText` sends the payload to OpenRouter. If the query requires current post-2024 information, the model emits a tool call for `getRecentNews`.
+5. **Search Engine Execution:** `/api/chat` invokes `searchWeb(query)`, querying Google News RSS, Wikipedia, Perplexity, Google CSE, Serper, Tavily, or DuckDuckGo.
+6. **SSE Token Streaming:** The model ingests the search context and streams synthesized response tokens back to the client using Server-Sent Events (SSE).
+7. **UI Rendering & Storage:** `MessageBubble` parses Markdown live and highlights code blocks. Upon stream completion (`onFinish`), `ChatPage` updates `conversations` state and syncs to `localStorage`.
+
+---
+
+---
+
 ## 🏆 11. Official Capstone Portfolio Submission Entry
 
 ```markdown
